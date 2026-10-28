@@ -238,7 +238,21 @@ hr{border:0;border-top:1px solid rgba(255,255,255,.10);margin:16px 0}
 </style>
 </head>
 <body>
-<div id="app"></div>
+<div id="app">
+  <div style="padding:28px 18px;text-align:center;font-family:-apple-system,BlinkMacSystemFont,sans-serif;color:#eef3fb">
+    <div style="font-size:54px">🇬🇧</div>
+    <h1 style="margin:12px 0 6px;font-size:24px">Apprends l'anglais</h1>
+    <p style="color:#93a4bf;font-size:14px;margin:0 0 18px">Chargement de l'application…</p>
+    <p id="bootmsg" style="color:#ffb64d;font-size:13px;max-width:320px;margin:0 auto">
+      Si ce message reste affiché plus de 3 secondes, le JavaScript est bloqué par le navigateur.
+    </p>
+    <button onclick="try{localStorage.clear();caches.keys().then(k=>Promise.all(k.map(x=>caches.delete(x))));navigator.serviceWorker.getRegistrations().then(r=>r.forEach(x=>x.unregister()));}catch(e){};setTimeout(()=>location.reload(),600)"
+      style="margin-top:18px;padding:14px 20px;border-radius:16px;border:0;background:#5ad100;color:#05260a;font-weight:800;font-size:15px">
+      Réinitialiser et recharger
+    </button>
+  </div>
+</div>
+<noscript><p style="padding:20px;color:#fff;background:#7f1d1d;font-family:sans-serif">JavaScript est désactivé. Active-le dans Réglages → Safari → Avancé.</p></noscript>
 <div class="toast" id="toast"></div>
 <script>
 const DATA = __DATA__;
@@ -598,15 +612,16 @@ function lesson(a){
     a.innerHTML=`${bar}
       <div class="card">
         <div class="between"><span class="pill">${LEVELS[p.lvl].emoji} ${p.lvl}</span><span class="tiny muted">${L.idx+1}/${L.picks.length}</span></div>
-        <div class="bigword">${esc(w.e)}</div>
-        <div class="row"><span class="phon">${esc(w.p||"")}</span><button class="pill" id="sp">🔊 Écouter</button></div>
+        <div class="bigword karaoke">${esc(w.e)}</div>
+        <div class="kbar"><i id="kf"></i></div>
+        <div class="row" style="margin-top:10px"><span class="phon">${esc(w.p||"")}</span><button class="pill" id="sp">🔊 Écouter</button></div>
         <div class="spacer"></div>
         <div><b>${esc(w.f)}</b></div>
         ${w.x?`<div class="ex">${esc(w.x)}<br><span style="color:#6f82a0">${esc(w.xf||"")}</span></div>`:""}
       </div>
       <div class="feed"><div><button class="btn" id="next">Continuer</button></div></div>`;
-    $("#sp").onclick=()=>speak(w.e+" . "+w.x);
-    setTimeout(()=>speak(w.e),300);
+    $("#sp").onclick=()=>{ karaokeRun(w.e,.9); speak(w.e+" . "+w.x); };
+    setTimeout(()=>{ karaokeRun(w.e,.9); speak(w.e); },300);
     $("#next").onclick=()=>{L.idx++;if(L.idx>=L.picks.length){L.phase="quiz";L.idx=0}render()};
     return;
   }
